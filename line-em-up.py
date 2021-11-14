@@ -43,18 +43,6 @@ class Game:
 				row_to_print+=str(self.current_state[x][y])+'  '
 			print(row_to_print)
 		print()
-
-	def column(self,i):
-		return [row[i] for row in self.current_state.T]
-
-	def row(self,i):
-		return [row[i] for row in self.current_state]
-
-	def diagonal1(self):
-		return self.current_state.diagonal()
-
-	def diagonal2(self):
-		return np.fliplr(self.current_state).diagonal()
 		
 	def is_valid(self, px, py):
 		if px < 0 or px > 2 or py < 0 or py > 2:
@@ -68,7 +56,7 @@ class Game:
 
 		# Vertical win
 		for i in range(int(self.n)):
-			sequence = "".join(self.column(i)).strip()
+			sequence = "".join(column(i, self.current_state)).strip()
 			#X wins
 			if re.search("X{"+str(self.s)+",}",sequence):
 				return 'X'
@@ -78,7 +66,7 @@ class Game:
 
 		# Horizontal win
 		for i in range(int(self.n)):
-			sequence = "".join(self.row(i)).strip()
+			sequence = "".join(row(i, self.current_state)).strip()
 			#X wins
 			if re.search("X{"+str(self.s)+",}",sequence):
 				return 'X'
@@ -87,7 +75,7 @@ class Game:
 				return 'O'
 
 		# Main diagonal win
-		sequence = "".join(self.diagonal1()).strip()
+		sequence = "".join(diagonal1(self.current_state)).strip()
 		#X wins
 		if re.search("X{"+str(self.s)+",}",sequence):
 			return 'X'
@@ -96,7 +84,7 @@ class Game:
 			return 'O'		
 
 		# Second diagonal win
-		sequence = "".join(self.diagonal2()).strip()
+		sequence = "".join(diagonal2(self.current_state)).strip()
 		#X wins
 		if re.search("X{"+str(self.s)+",}",sequence):
 			return 'X'
@@ -266,6 +254,20 @@ class Game:
 			self.current_state[x][y] = self.player_turn
 			self.switch_player()
 
+	def e2(self, state):
+		sequence = ''
+		score = 0
+		#for each row
+		for i in range(int(self.n)):
+			sequence = "".join(column(i, state)).strip()
+			if re.search("X{"+str(self.s)+",}",sequence):
+				score+=1000
+			elif re.search("O{"+str(self.s)+",}",sequence):
+				score-=1000
+
+		return score
+			
+
 def transform_input_to_int(char):
 	letters = ['A','B','D','E','F','G','H','I','J',]
 	for i in range(len(letters)):
@@ -276,30 +278,41 @@ def transform_input_to_char(int_val):
 	letters = ['A','B','D','E','F','G','H','I','J',]
 	return letters[int_val]
 
+def column(i, state):
+	return [col[i] for col in state.T]
+
+def row(i, state):
+	return [row[i] for row in state]
+
+def diagonal1(state):
+	return state.diagonal()
+
+def diagonal2(state):
+	return np.fliplr(state).diagonal()
+
 def main():
 
-	dimension = input("Enter your value for \"n\", where \"n\" will be the dimension of (n x n) of the board: ")
-	nb_blocs = input("Enter your value for \"b\", where \"b\" is the number of blocs present on the board: ")
-	required_nb_of_pieces_to_win = input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
+	dimension = 5
+	nb_blocs = 4
+	required_nb_of_pieces_to_win = 4
 
+	#dimension = input("Enter your value for \"n\", where \"n\" will be the dimension of (n x n) of the board: ")
+	#nb_blocs = input("Enter your value for \"b\", where \"b\" is the number of blocs present on the board: ")
+	#required_nb_of_pieces_to_win = input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
 
 	g = Game(nb_blocs, dimension, required_nb_of_pieces_to_win, recommend=True)
 	#g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
 	#g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
 	g.draw_board()
 
-	#print every column
-	for i in range(int(g.n)):
-		print(g.column(i))
-
-	g.current_state[0][0] = 'X'
-	g.current_state[1][1] = 'X'
-	g.current_state[2][2] = 'X'
+	g.current_state[0][0] = 'O'
+	g.current_state[1][1] = 'O'
+	g.current_state[2][2] = 'O'
+	g.current_state[3][3] = 'O'
 
 	g.draw_board()
+	print(column(1,g.current_state))
 	print(g.is_end())
-
-	print(transform_input_to_char(1))
 
 if __name__ == "__main__":
 	main()
