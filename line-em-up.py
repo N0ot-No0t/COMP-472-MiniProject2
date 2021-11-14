@@ -31,10 +31,17 @@ class Game:
 
 	def draw_board(self):
 		print()
+
+		header_row = "~ "
+		for i in range(int(self.n)):
+			header_row += transform_input_to_char(i)+"  "
+
+		print(header_row)
 		for y in range(0, int(self.n)):
+			row_to_print = str(y)+" "
 			for x in range(0, int(self.n)):
-				print(F'{self.current_state[x][y]}  ', end="")
-			print()
+				row_to_print+=str(self.current_state[x][y])+'  '
+			print(row_to_print)
 		print()
 
 	def column(self,i):
@@ -259,6 +266,16 @@ class Game:
 			self.current_state[x][y] = self.player_turn
 			self.switch_player()
 
+def transform_input_to_int(char):
+	letters = ['A','B','D','E','F','G','H','I','J',]
+	for i in range(len(letters)):
+		if char.upper() == letters[i]:
+			return i
+
+def transform_input_to_char(int_val):
+	letters = ['A','B','D','E','F','G','H','I','J',]
+	return letters[int_val]
+
 def main():
 
 	dimension = input("Enter your value for \"n\", where \"n\" will be the dimension of (n x n) of the board: ")
@@ -281,6 +298,8 @@ def main():
 
 	g.draw_board()
 	print(g.is_end())
+
+	print(transform_input_to_char(1))
 
 if __name__ == "__main__":
 	main()
