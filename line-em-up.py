@@ -2,6 +2,7 @@
 
 import time
 import numpy as np
+import re
 
 class Game:
 	MINIMAX = 0
@@ -41,6 +42,12 @@ class Game:
 
 	def row(self,i):
 		return [row[i] for row in self.current_state]
+
+	def diagonal1(self):
+		return self.current_state.diagonal()
+
+	def diagonal2(self):
+		return np.fliplr(self.current_state).diagonal()
 		
 	def is_valid(self, px, py):
 		if px < 0 or px > 2 or py < 0 or py > 2:
@@ -53,20 +60,46 @@ class Game:
 	def is_end(self):
 
 		# Vertical win
-
-		#TODO use column() function and check for a win on each col
+		for i in range(int(self.n)):
+			sequence = "".join(self.column(i)).strip()
+			#X wins
+			if re.search("X{"+str(self.s)+",}",sequence):
+				return 'X'
+			#O wins
+			elif re.search("O{"+str(self.s)+",}",sequence):
+				return 'O'
 
 		# Horizontal win
+		for i in range(int(self.n)):
+			sequence = "".join(self.row(i)).strip()
+			#X wins
+			if re.search("X{"+str(self.s)+",}",sequence):
+				return 'X'
+			#O wins
+			elif re.search("O{"+str(self.s)+",}",sequence):
+				return 'O'
 
-		#TODO use row() function and check for a win on each row
-	
 		# Main diagonal win
+		sequence = "".join(self.diagonal1()).strip()
+		#X wins
+		if re.search("X{"+str(self.s)+",}",sequence):
+			return 'X'
+		#O wins
+		elif re.search("O{"+str(self.s)+",}",sequence):
+			return 'O'		
 
 		# Second diagonal win
+		sequence = "".join(self.diagonal2()).strip()
+		#X wins
+		if re.search("X{"+str(self.s)+",}",sequence):
+			return 'X'
+		#O wins
+		elif re.search("O{"+str(self.s)+",}",sequence):
+			return 'O'	
 
 		# Is whole board full?
-		for i in range(0, self.n):
-			for j in range(0, self.n):
+		for i in range(0, int(self.n)):
+			for j in range(0, int(self.n)):
 				# There's an empty field, we continue the game
 				if (self.current_state[i][j] == '.'):
 					return None
@@ -241,6 +274,13 @@ def main():
 	#print every column
 	for i in range(int(g.n)):
 		print(g.column(i))
+
+	g.current_state[0][0] = 'X'
+	g.current_state[1][1] = 'X'
+	g.current_state[2][2] = 'X'
+
+	g.draw_board()
+	print(g.is_end())
 
 if __name__ == "__main__":
 	main()
