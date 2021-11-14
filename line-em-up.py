@@ -151,24 +151,24 @@ class Game:
 			return (1, x, y)
 		elif result == '.':
 			return (0, x, y)
-		for i in range(0, self.n):
-			for j in range(0, self.n):
-				if self.current_state[i][j] == '.':
+		for i in range(0, int(self.n)):
+			for j in range(0, int(self.n)):
+				if self.current_state[i][j].strip() == '.':
 					if max:
-						self.current_state[i][j] = 'O'
+						self.current_state[i][j] = 'O  '
 						(v, _, _) = self.minimax(max=False)
 						if v > value:
 							value = v
 							x = i
 							y = j
 					else:
-						self.current_state[i][j] = 'X'
+						self.current_state[i][j] = 'X  '
 						(v, _, _) = self.minimax(max=True)
 						if v < value:
 							value = v
 							x = i
 							y = j
-					self.current_state[i][j] = '.'
+					self.current_state[i][j] = '.  '
 		return (value, x, y)
 
 	def alphabeta(self, alpha=-2, beta=2, max=False):
@@ -260,11 +260,11 @@ class Game:
 		#for each row
 		for i in range(int(self.n)):
 			sequence = "".join(column(i, state)).strip()
-			if re.search("X{"+str(self.s)+",}",sequence):
-				score+=1000
-			elif re.search("O{"+str(self.s)+",}",sequence):
-				score-=1000
-
+			for j in range(int(self.s)):
+				if re.search("O{"+str(int(self.s)-j)+",}",sequence):
+					score+=(int(self.s)-j)*10**(int(self.s)-j)
+				elif re.search("X{"+str(int(self.s)-j)+",}",sequence):
+					score-=(int(self.s)-j)*10**(int(self.s)-j)
 		return score
 			
 
