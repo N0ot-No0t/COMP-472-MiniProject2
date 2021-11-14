@@ -19,7 +19,7 @@ class Game:
         self.required_nb_of_pieces_to_win = self.get_integer_input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
         self.set_blocks() #add block to game board
         self.max_time = self.get_integer_input("Enter the max allowed time “t” (in seconds) for program to return a move: ")
-        # algo = input("Enter false to do minimax or true to do alphabeta: ")
+        self.algo = self.get_algo_input("Enter false to do minimax or true to do alphabeta: ")
         self.player_x = self.get_player_input("Enter the word 'human' if you want player X to be a human. Enter 'AI' if you want player X to be under AI control: ")
         self.player_o = self.get_player_input("Enter the word 'human' if you want player O to be a human. Enter 'AI' if you want player O to be under AI control: ")
         depth_p1 = self.get_integer_input("Enter the max depth for player 1: ")
@@ -33,6 +33,18 @@ class Game:
         while True:
             try:
                 return int(input(prompt))
+            except ValueError:
+                print('Invalid input. Please try again!')
+
+    def get_algo_input(self, prompt):
+        while True:
+            try:
+                value = str(input(prompt))
+                if value.casefold() == "true":
+                    return self.ALPHABETA
+                elif value.casefold() == "false":
+                    return self.MINIMAX
+                print('Invalid input. Please try again!')
             except ValueError:
                 print('Invalid input. Please try again!')
 
