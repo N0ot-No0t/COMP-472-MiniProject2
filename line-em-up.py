@@ -13,6 +13,7 @@ class Game:
     
     def __init__(self, recommend = True):
         self.trace_file_content = []
+        self.heuristic_evaluations = 0
         self.initialize_game()
         self.recommend = recommend
 
@@ -80,7 +81,6 @@ class Game:
         while True:
             try:
                 win_size = int(input(prompt))
-                print("Inputted "+str(win_size))
                 if win_size >= 3 and win_size <= self.dimension:
                     return win_size
                 print(f"Invalid input. The winning line-up size must be between 3 and {self.dimension}. Please try again!")
@@ -204,11 +204,14 @@ class Game:
         if self.result != None:
             if self.result == 'X':
                 print('The winner is X!')
+                self.trace_file_content.append('\nThe winner is X!\n')
             elif self.result == 'O':
                 print('The winner is O!')
+                self.trace_file_content.append('\nThe winner is O!\n')
             elif self.result == '.':
                 print("It's a tie!")
-            self.initialize_game()
+                self.trace_file_content.append("\nIt's a tie!\n")
+            # self.initialize_game()
         return self.result
 
     def count_num_empty_cells(self):
@@ -233,6 +236,7 @@ class Game:
             self.player_turn = 'O'
         elif self.player_turn == 'O':
             self.player_turn = 'X'
+        self.heuristic_evaluations = 0
         return self.player_turn
 
     def minimax(self, max=False, current_depth=0):
@@ -256,10 +260,13 @@ class Game:
         y = None
         result = self.is_end()
         if result == 'X':
-            return (-1, x, y)
+            self.heuristic_evaluations += 1
+            return (float('-inf'), x, y)
         elif result == 'O':
-            return (1, x, y)
+            self.heuristic_evaluations += 1
+            return (float('inf'), x, y)
         elif result == '.':
+            self.heuristic_evaluations += 1
             return (0, x, y)
         if current_depth == max_depth:
             return (self.e2(), x, y)
@@ -292,9 +299,9 @@ class Game:
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
         max_depth = self.depth_x
-        value = 10**5
+        value = float('inf')
         if max:
-            value = -10**5
+            value = float('-inf')
             max_depth = self.depth_o
         
         #check if num_empty cells (num of moves left) is less than the max depth
@@ -305,10 +312,13 @@ class Game:
         y = None
         result = self.is_end()
         if result == 'X':
-            return (-1, x, y)
+            self.heuristic_evaluations += 1
+            return (float('-inf'), x, y)
         elif result == 'O':
-            return (1, x, y)
+            self.heuristic_evaluations += 1
+            return (float('inf'), x, y)
         elif result == '.':
+            self.heuristic_evaluations += 1
             return (0, x, y)
         if current_depth == max_depth:
             return (self.e2(), x, y)
@@ -346,6 +356,12 @@ class Game:
         while True:
             self.draw_board()
             if self.check_end():
+                self.trace_file_content.append("6(b)i   Average evaluation time: ")
+                self.trace_file_content.append("6(b)ii  Total heuristic evaluations: ")
+                self.trace_file_content.append("6(b)iii Evaluations by depth: ")
+                self.trace_file_content.append("6(b)iv  Average evaluation depth: ")
+                self.trace_file_content.append("6(b)v   Average recursion depth: ")
+                self.trace_file_content.append("6(b)vi  Total moves: ")
                 self.save_trace_file(self.trace_file_content)
                 return
             start = time.time()
@@ -364,12 +380,20 @@ class Game:
                     if self.recommend:
                         print(F'Evaluation time: {round(end - start, 7)}s')
                         print(F'Recommended move: x = {transform_input_to_char(x)}, y = {y}')
+                        self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {x}, j = {y}')
+                        self.trace_file_content.append(F'   i.  Evaluation time: {round(end - start, 7)}s')
                     (x,y) = self.input_move()
             if (self.player_turn == 'X' and self.player_x == self.AI) or (self.player_turn == 'O' and self.player_o == self.AI):
                         print(F'Evaluation time: {round(end - start, 7)}s')
                         print(F'Player {self.player_turn} under AI control plays: i = {x}, j = {y}')
                         self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {x}, j = {y}')
                         self.trace_file_content.append(F'   i.  Evaluation time: {round(end - start, 7)}s')
+            
+            self.trace_file_content.append(F"   ii.  Heuristic evaluations: {self.heuristic_evaluations}")
+            self.trace_file_content.append(F"   iii. Evaluations by depth: ")
+            self.trace_file_content.append(F"   iv.  Average evaluation depth: ")
+            self.trace_file_content.append(F"   v.   Average recursion depth: ")
+
             self.current_state[x][y] = self.player_turn
             self.switch_player()
         self.save_trace_file(self.trace_file_content)
@@ -398,10 +422,13 @@ class Game:
                         score+=(self.win_size-j)*10**(self.win_size-j)
                     elif re.search("X{"+str(self.win_size-j)+",}",diag_sequence):
                         score-=(self.win_size-j)*10**(self.win_size-j)
+
+        self.heuristic_evaluations += 1
         return score
 
     def save_trace_file(self, trace):
-        with open(f"gameTrace-{self.dimension}{self.nb_blocs}{self.win_size}{self.max_time}.txt", "w") as file:
+        filename = f"gameTrace-{self.dimension}{self.nb_blocs}{self.win_size}{self.max_time}.txt"
+        with open(filename, "w") as file:
             file.write('\n'.join(trace))
 
 def transform_input_to_int(char):
