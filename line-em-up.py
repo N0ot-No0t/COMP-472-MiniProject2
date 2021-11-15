@@ -228,20 +228,20 @@ class Game:
             self.player_turn = 'X'
         return self.player_turn
 
-    def minimax(self, max=False, current_depth = 0):
+    def minimax(self, max=False, current_depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
-        max_depth = self.depth_x;
-        value = 10**5
+        max_depth = self.depth_x
+        value = float('inf')
         if max:
-            value = -10**5
-            max_depth = self.depth_o;
+            value = float('-inf')
+            max_depth = self.depth_o
 
-        #check if num_empty cells is less than the max depth
+        #check if num_empty cells (num of moves left) is less than the max depth
         if self.count_num_empty_cells() < max_depth:
             max_depth = self.count_num_empty_cells()
        
@@ -277,16 +277,23 @@ class Game:
                     self.current_state[i][j] = '.  '
         return (value, x, y)
 
-    def alphabeta(self, alpha=-2, beta=2, max=False):
+    def alphabeta(self, alpha=float('inf'), beta=float('-inf'), max=False, current_depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
-        value = 2
+        max_depth = self.depth_x
+        value = 10**5
         if max:
-            value = -2
+            value = -10**5
+            max_depth = self.depth_o
+        
+        #check if num_empty cells (num of moves left) is less than the max depth
+        if self.count_num_empty_cells() < max_depth:
+            max_depth = self.count_num_empty_cells()
+
         x = None
         y = None
         result = self.is_end()
@@ -296,19 +303,21 @@ class Game:
             return (1, x, y)
         elif result == '.':
             return (0, x, y)
+        if current_depth == max_depth:
+            return (self.e2(), x, y)
         for i in range(0, self.dimension):
             for j in range(0, self.dimension):
                 if self.current_state[i][j] == '.':
                     if max:
                         self.current_state[i][j] = 'O'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=False)
+                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1)
                         if v > value:
                             value = v
                             x = i
                             y = j
                     else:
                         self.current_state[i][j] = 'X'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=True)
+                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1)
                         if v < value:
                             value = v
                             x = i
