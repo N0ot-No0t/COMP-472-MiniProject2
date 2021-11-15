@@ -51,6 +51,7 @@ class Game:
 
         self.trace_file_content.append(f"n={self.dimension} b={self.nb_blocs} s={self.win_size} t={self.max_time}")
         self.trace_file_content.append(f"Player X: {self.player_x} d={self.depth_x} a={self.algo} e2()")
+        self.trace_file_content.append(f"Player O: {self.player_o} d={self.depth_o} a={self.algo} e2()")
 
         # Set the blocs to random places on the board
         # np.put(self.current_state,np.random.choice(range(int(self.n)*int(self.n)), int(self.b), replace='#'),"#")
@@ -138,11 +139,13 @@ class Game:
             header_row += transform_input_to_char(i)+"  "
 
         print(header_row)
+        self.trace_file_content.append(f"\n{header_row}")
         for y in range(0, int(self.dimension)):
             row_to_print = str(y)+" "
             for x in range(0, int(self.dimension)):
                 row_to_print+=str(self.current_state[x][y])+'  '
             print(row_to_print)
+            self.trace_file_content.append(row_to_print)
         print()
         
     def is_valid(self, px, py):
@@ -365,6 +368,8 @@ class Game:
             if (self.player_turn == 'X' and self.player_x == self.AI) or (self.player_turn == 'O' and self.player_o == self.AI):
                         print(F'Evaluation time: {round(end - start, 7)}s')
                         print(F'Player {self.player_turn} under AI control plays: i = {x}, j = {y}')
+                        self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {x}, j = {y}')
+                        self.trace_file_content.append(F'   i.  Evaluation time: {round(end - start, 7)}s')
             self.current_state[x][y] = self.player_turn
             self.switch_player()
         self.save_trace_file(self.trace_file_content)
