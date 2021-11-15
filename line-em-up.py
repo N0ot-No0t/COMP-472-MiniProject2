@@ -15,11 +15,11 @@ class Game:
         self.recommend = recommend
         
     def initialize_game(self):
-        self.dimension = self.get_integer_input("Enter your value for \"n\", where \"n\" will be the dimension (n x n) of the board: ")
+        self.dimension = self.get_dimension_input("Enter your value for \"n\", where \"n\" will be the dimension (n x n) of the board: ")
         self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
         self.current_state = np.asarray(self.current_state)
-        self.nb_blocs = self.get_integer_input("Enter your value for \"b\", where \"b\" is the number of blocs present on the board: ")
-        self.required_nb_of_pieces_to_win = self.get_integer_input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
+        self.nb_blocs = self.get_num_blocs_input("Enter your value for \"b\", where \"b\" is the number of blocs present on the board: ")
+        self.required_nb_of_pieces_to_win = self.get_win_size_input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
         self.set_blocks() #add block to game board
         self.max_time = self.get_integer_input("Enter the max allowed time “t” (in seconds) for program to return a move: ")
         self.algo = self.get_algo_input("Enter false to do minimax or true to do alphabeta: ")
@@ -32,6 +32,36 @@ class Game:
 
         # Set the blocs to random places on the board
         # np.put(self.current_state,np.random.choice(range(int(self.n)*int(self.n)), int(self.b), replace='#'),"#")
+
+    def get_dimension_input(self, prompt):
+        while True:
+            try:
+                size = int(input(prompt))
+                if size >= 3 and size <=10:
+                    return size
+                print("Invalid input. The dimension of the board must be between 3 and 10. Please try again!")
+            except ValueError:
+                print('Invalid input. Please try again!')
+
+    def get_num_blocs_input(self, prompt):
+        while True:
+            try:
+                num_blocs = int(input(prompt))
+                if num_blocs >= 0 and num_blocs <=2*self.dimension:
+                    return num_blocs
+                print(f"Invalid input. The number of blocs must be between 0 and {2*self.dimension}. Please try again!")
+            except ValueError:
+                print('Invalid input. Please try again!')
+
+    def get_win_size_input(self, prompt):
+        while True:
+            try:
+                win_size = int(input(prompt))
+                if win_size >= 3 and win_size <=self.dimension:
+                    return win_size
+                print(f"Invalid input. The winning line-up size must be between 3 and {self.dimension}. Please try again!")
+            except ValueError:
+                print('Invalid input. Please try again!')
 
     def get_integer_input(self, prompt):
         while True:
