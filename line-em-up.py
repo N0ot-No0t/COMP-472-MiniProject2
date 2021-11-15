@@ -9,7 +9,7 @@ class Game:
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
-    DEV = True
+    DEV = False
     
     def __init__(self, recommend = True):
         self.trace_file_content = []
@@ -221,7 +221,7 @@ class Game:
     def input_move(self):
         while True:
             print(F'Player {self.player_turn}, enter your move:')
-            px = int(input('enter the x coordinate: '))
+            px = int(transform_input_to_int(input('enter the x coordinate (A,B,C,D,...): ')) )
             py = int(input('enter the y coordinate: '))
             if self.is_valid(px, py):
                 return (px,py)
@@ -363,7 +363,7 @@ class Game:
             if (self.player_turn == 'X' and self.player_x == self.HUMAN) or (self.player_turn == 'O' and self.player_o == self.HUMAN):
                     if self.recommend:
                         print(F'Evaluation time: {round(end - start, 7)}s')
-                        print(F'Recommended move: x = {x}, y = {y}')
+                        print(F'Recommended move: x = {transform_input_to_char(x)}, y = {y}')
                     (x,y) = self.input_move()
             if (self.player_turn == 'X' and self.player_x == self.AI) or (self.player_turn == 'O' and self.player_o == self.AI):
                         print(F'Evaluation time: {round(end - start, 7)}s')
@@ -389,12 +389,15 @@ class Game:
                     score+=(self.win_size-j)*10**(self.win_size-j)
                 elif re.search("X{"+str(self.win_size-j)+",}",row_sequence):
                     score-=(self.win_size-j)*10**(self.win_size-j)
+        #for each diagonal (2N+1)
         for i in range(2*self.dimension+1):
             diag_sequence = "".join(diagonal(i, self.current_state)).strip()
-            if re.search("O{"+str(self.win_size-j)+",}",diag_sequence):
-                    score+=(self.win_size-j)*10**(self.win_size-j)
-            elif re.search("X{"+str(self.win_size-j)+",}",diag_sequence):
-                score-=(self.win_size-j)*10**(self.win_size-j)
+            if len(diag_sequence) >= self.win_size:
+                for j in range(self.win_size):
+                    if re.search("O{"+str(self.win_size-j)+",}",diag_sequence):
+                        score+=(self.win_size-j)*10**(self.win_size-j)
+                    elif re.search("X{"+str(self.win_size-j)+",}",diag_sequence):
+                        score-=(self.win_size-j)*10**(self.win_size-j)
         return score
 
     def save_trace_file(self, trace):
