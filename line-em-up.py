@@ -262,7 +262,7 @@ class Game:
         elif result == '.':
             return (0, x, y)
         if current_depth == max_depth:
-            return (self.e2(), x, y)
+            return (self.e1(), x, y)
 
         for i in range(0, int(self.dimension)):
             for j in range(0, int(self.dimension)):
@@ -374,6 +374,7 @@ class Game:
             self.switch_player()
         self.save_trace_file(self.trace_file_content)
 
+    #More complicated heuristic. Possible max O(n^2 + 2n^2 + n) so O(n^2).
     def e2(self):
         score = 0
         #for each row and column
@@ -400,6 +401,23 @@ class Game:
                         score-=(self.win_size-j)*10**(self.win_size-j)
         return score
 
+    #Simple heuristic. Possible max O(200) ==> n = 10
+    def e1(self):
+        score = 0
+
+        #upper horizontal half
+        score += eval_o_vs_x(self.current_state[:int(self.dimension/2)+1,:])
+        #lower horizontal half
+        score += eval_o_vs_x(self.current_state[int(self.dimension/2):,:])
+
+        #left vertical half
+        score += eval_o_vs_x(self.current_state[:,:int(self.dimension/2 + 1)])
+        #right vertical half
+        score += eval_o_vs_x(self.current_state[:,int(self.dimension/2):])
+
+        return score
+
+
     def save_trace_file(self, trace):
         with open(f"gameTrace-{self.dimension}{self.nb_blocs}{self.win_size}{self.max_time}.txt", "w") as file:
             file.write('\n'.join(trace))
@@ -413,6 +431,17 @@ def transform_input_to_int(char):
 def transform_input_to_char(int_val):
     letters = ['A','B','C','D','E','F','G','H','I','J',]
     return letters[int_val]
+
+def eval_o_vs_x(grid):
+    x_count = 0
+    o_count = 0
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j] == 'X':
+                x_count+=1
+            elif grid[i][j] == 'O':
+                o_count+=1
+    return (o_count - x_count)
 
 #Return i_th col
 def column(i, state):
@@ -434,6 +463,8 @@ def main():
     g = Game(recommend=True)
     #g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     g.play()
+
+
 
 if __name__ == "__main__":
     main()

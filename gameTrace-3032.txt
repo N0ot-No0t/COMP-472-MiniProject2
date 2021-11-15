@@ -1,0 +1,75 @@
+n=4 b=0 s=3 t=2
+Player X: 3 d=3 a=0 e2()
+Player O: 3 d=3 a=0 e2()
+
+~ A  B  C  D  
+0 .  .  .  .  
+1 .  .  .  .  
+2 .  .  .  .  
+3 .  .  .  .  
+
+Player X under AI control plays: i = 2, j = 2
+   i.  Evaluation time: 3.6000941s
+
+~ A  B  C  D  
+0 .  .  .  .  
+1 .  .  .  .  
+2 .  .  X  .  
+3 .  .  .  .  
+
+Player O under AI control plays: i = 0, j = 2
+   i.  Evaluation time: 2.5842199s
+
+~ A  B  C  D  
+0 .  .  .  .  
+1 .  .  .  .  
+2 O  .  X  .  
+3 .  .  .  .  
+
+Player X under AI control plays: i = 1, j = 2
+   i.  Evaluation time: 1.958684s
+
+~ A  B  C  D  
+0 .  .  .  .  
+1 .  .  .  .  
+2 O  X  X  .  
+3 .  .  .  .  
+
+Player O under AI control plays: i = 0, j = 0
+   i.  Evaluation time: 1.423723s
+
+~ A  B  C  D  
+0 O  .  .  .  
+1 .  .  .  .  
+2 O  X  X  .  
+3 .  .  .  .  
+
+Player X under AI control plays: i = 0, j = 1
+   i.  Evaluation time: 0.9067791s
+
+~ A  B  C  D  
+0 O  .  .  .  
+1 X  .  .  .  
+2 O  X  X  .  
+3 .  .  .  .  
+
+Player O under AI control plays: i = 2, j = 0
+   i.  Evaluation time: 0.8492301s
+
+~ A  B  C  D  
+0 O  .  O  .  
+1 X  .  .  .  
+2 O  X  X  .  
+3 .  .  .  .  
+
+Player X under AI control plays: i = 3, j = 2
+   i.  Evaluation time: 0.413857s
+
+~ A  B  C  D  
+0 O  .  O  .  
+1 X  .  .  .  
+2 O  X  X  X  
+3 .  .  .  .  
+n=3 b=0 s=3 t=2
+Player X: 3 d=3 a=0 e2()
+Player O: 3 d=3 a=0 e2()
