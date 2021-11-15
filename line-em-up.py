@@ -12,9 +12,10 @@ class Game:
     DEV = True
     
     def __init__(self, recommend = True):
+        self.trace_file_content = []
         self.initialize_game()
         self.recommend = recommend
-        
+
     def initialize_game(self):
         if self.DEV:
             self.dimension = 5
@@ -47,6 +48,9 @@ class Game:
             self.depth_o = self.get_integer_input("Enter the max depth for player O: ")
         # Player X always plays first
         self.player_turn = 'X'
+
+        self.trace_file_content.append(f"n={self.dimension} b={self.nb_blocs} s={self.win_size} t={self.max_time}")
+        self.trace_file_content.append(f"Player X: {self.player_x} d={self.depth_x} a={self.algo} e2()")
 
         # Set the blocs to random places on the board
         # np.put(self.current_state,np.random.choice(range(int(self.n)*int(self.n)), int(self.b), replace='#'),"#")
@@ -339,6 +343,7 @@ class Game:
         while True:
             self.draw_board()
             if self.check_end():
+                self.save_trace_file(self.trace_file_content)
                 return
             start = time.time()
             if self.algo == self.MINIMAX:
@@ -362,6 +367,7 @@ class Game:
                         print(F'Player {self.player_turn} under AI control plays: i = {x}, j = {y}')
             self.current_state[x][y] = self.player_turn
             self.switch_player()
+        self.save_trace_file(self.trace_file_content)
 
     def e2(self):
         score = 0
@@ -385,7 +391,10 @@ class Game:
             elif re.search("X{"+str(self.win_size-j)+",}",diag_sequence):
                 score-=(self.win_size-j)*10**(self.win_size-j)
         return score
-            
+
+    def save_trace_file(self, trace):
+        with open(f"gameTrace-{self.dimension}{self.nb_blocs}{self.win_size}{self.max_time}.txt", "w") as file:
+            file.write('\n'.join(trace))
 
 def transform_input_to_int(char):
     letters = ['A','B','C','D','E','F','G','H','I','J',]
