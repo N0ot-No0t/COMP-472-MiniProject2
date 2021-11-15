@@ -17,6 +17,7 @@ class Game:
     def initialize_game(self):
         self.dimension = self.get_integer_input("Enter your value for \"n\", where \"n\" will be the dimension (n x n) of the board: ")
         self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
+        self.current_state = np.asarray(self.current_state)
         self.nb_blocs = self.get_integer_input("Enter your value for \"b\", where \"b\" is the number of blocs present on the board: ")
         self.required_nb_of_pieces_to_win = self.get_integer_input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
         self.set_blocks() #add block to game board
@@ -24,8 +25,8 @@ class Game:
         self.algo = self.get_algo_input("Enter false to do minimax or true to do alphabeta: ")
         self.player_x = self.get_player_input("Enter the word 'human' if you want player X to be a human. Enter 'AI' if you want player X to be under AI control: ")
         self.player_o = self.get_player_input("Enter the word 'human' if you want player O to be a human. Enter 'AI' if you want player O to be under AI control: ")
-        depth_p1 = self.get_integer_input("Enter the max depth for player 1: ")
-        depth_p2 = self.get_integer_input("Enter the max depth for player 2: ")
+        self.depth_X = self.get_integer_input("Enter the max depth for player X: ")
+        self.depth_O = self.get_integer_input("Enter the max depth for player O: ")
         # Player X always plays first
         self.player_turn = 'X'
 
@@ -161,6 +162,13 @@ class Game:
             self.initialize_game()
         return self.result
 
+    def count_num_empty_cells(self):
+        num_empty_cells = 0;
+        for col in range(self.dimension):
+            sequence = "".join(column(col, self.current_state)).strip()
+            num_empty_cells+=sequence.count('.')
+        return num_empty_cells
+
     def input_move(self):
         while True:
             print(F'Player {self.player_turn}, enter your move:')
@@ -178,16 +186,23 @@ class Game:
             self.player_turn = 'X'
         return self.player_turn
 
-    def minimax(self, max=False):
+    def minimax(self, max=False, current_depth = 0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
-        value = 2
+        max_depth = self.depth_X;
+        value = 10**5
         if max:
-            value = -2
+            value = -10**5
+            max_depth = self.depth_O;
+
+        #check if num_empty cells is less than the max depth
+        if self.count_num_empty_cells() < max_depth:
+            max_depth = self.count_num_empty_cells()
+       
         x = None
         y = None
         result = self.is_end()
@@ -197,19 +212,22 @@ class Game:
             return (1, x, y)
         elif result == '.':
             return (0, x, y)
+        if current_depth == max_depth:
+            return (self.e2(), x, y)
+
         for i in range(0, int(self.dimension)):
             for j in range(0, int(self.dimension)):
                 if self.current_state[i][j].strip() == '.':
                     if max:
                         self.current_state[i][j] = 'O  '
-                        (v, _, _) = self.minimax(max=False)
+                        (v, _, _) = self.minimax(max=False, current_depth=current_depth+1)
                         if v > value:
                             value = v
                             x = i
                             y = j
                     else:
                         self.current_state[i][j] = 'X  '
-                        (v, _, _) = self.minimax(max=True)
+                        (v, _, _) = self.minimax(max=True, current_depth=current_depth+1)
                         if v < value:
                             value = v
                             x = i
@@ -266,19 +284,13 @@ class Game:
                             beta = value
         return (value, x, y)
 
-    def play(self,algo=None,player_x=None,player_o=None):
-        if algo == None:
-            algo = self.ALPHABETA
-        if player_x == None:
-            player_x = self.HUMAN
-        if player_o == None:
-            player_o = self.HUMAN
+    def play(self):
         while True:
             self.draw_board()
             if self.check_end():
                 return
             start = time.time()
-            if algo == self.MINIMAX:
+            if self.algo == self.MINIMAX:
                 if self.player_turn == 'X':
                     (_, x, y) = self.minimax(max=False)
                 else:
@@ -289,23 +301,23 @@ class Game:
                 else:
                     (m, x, y) = self.alphabeta(max=True)
             end = time.time()
-            if (self.player_turn == 'X' and player_x == self.HUMAN) or (self.player_turn == 'O' and player_o == self.HUMAN):
+            if (self.player_turn == 'X' and self.player_x == self.HUMAN) or (self.player_turn == 'O' and self.player_o == self.HUMAN):
                     if self.recommend:
                         print(F'Evaluation time: {round(end - start, 7)}s')
                         print(F'Recommended move: x = {x}, y = {y}')
                     (x,y) = self.input_move()
-            if (self.player_turn == 'X' and player_x == self.AI) or (self.player_turn == 'O' and player_o == self.AI):
+            if (self.player_turn == 'X' and self.player_x == self.AI) or (self.player_turn == 'O' and self.player_o == self.AI):
                         print(F'Evaluation time: {round(end - start, 7)}s')
                         print(F'Player {self.player_turn} under AI control plays: i = {x}, j = {y}')
             self.current_state[x][y] = self.player_turn
             self.switch_player()
 
-    def e2(self, state):
+    def e2(self):
         sequence = ''
         score = 0
         #for each row
         for i in range(int(self.dimension)):
-            sequence = "".join(column(i, state)).strip()
+            sequence = "".join(column(i, self.current_state)).strip()
             for j in range(int(self.required_nb_of_pieces_to_win)):
                 if re.search("O{"+str(int(self.required_nb_of_pieces_to_win)-j)+",}",sequence):
                     score+=(int(self.required_nb_of_pieces_to_win)-j)*10**(int(self.required_nb_of_pieces_to_win)-j)
@@ -338,9 +350,8 @@ def diagonal2(state):
 
 def main():
     g = Game(recommend=True)
-    g.draw_board()
     #g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
-    #g.play(algo=Game.MINIMAX,player_x=Game.AI,player_o=Game.HUMAN)
+    g.play()
 
 if __name__ == "__main__":
     main()
