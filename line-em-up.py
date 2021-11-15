@@ -19,14 +19,14 @@ class Game:
         self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
         self.current_state = np.asarray(self.current_state)
         self.nb_blocs = self.get_num_blocs_input("Enter your value for \"b\", where \"b\" is the number of blocs present on the board: ")
-        self.required_nb_of_pieces_to_win = self.get_win_size_input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
+        self.win_size = self.get_win_size_input("Enter your value for \"s\", where \"s\" is the number of required pieces to win: ")
         self.set_blocks() #add block to game board
         self.max_time = self.get_integer_input("Enter the max allowed time “t” (in seconds) for program to return a move: ")
         self.algo = self.get_algo_input("Enter false to do minimax or true to do alphabeta: ")
         self.player_x = self.get_player_input("Enter the word 'human' if you want player X to be a human. Enter 'AI' if you want player X to be under AI control: ")
         self.player_o = self.get_player_input("Enter the word 'human' if you want player O to be a human. Enter 'AI' if you want player O to be under AI control: ")
-        self.depth_X = self.get_integer_input("Enter the max depth for player X: ")
-        self.depth_O = self.get_integer_input("Enter the max depth for player O: ")
+        self.depth_x = self.get_integer_input("Enter the max depth for player X: ")
+        self.depth_o = self.get_integer_input("Enter the max depth for player O: ")
         # Player X always plays first
         self.player_turn = 'X'
 
@@ -135,38 +135,38 @@ class Game:
         for i in range(int(self.dimension)):
             sequence = "".join(column(i, self.current_state)).strip()
             #X wins
-            if re.search("X{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+            if re.search("X{"+str(self.win_size)+",}",sequence):
                 return 'X'
             #O wins
-            elif re.search("O{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+            elif re.search("O{"+str(self.win_size)+",}",sequence):
                 return 'O'
 
         # Horizontal win
         for i in range(int(self.dimension)):
             sequence = "".join(row(i, self.current_state)).strip()
             #X wins
-            if re.search("X{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+            if re.search("X{"+str(self.win_size)+",}",sequence):
                 return 'X'
             #O wins
-            elif re.search("O{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+            elif re.search("O{"+str(self.win_size)+",}",sequence):
                 return 'O'
 
         # Main diagonal win
         sequence = "".join(diagonal1(self.current_state)).strip()
         #X wins
-        if re.search("X{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+        if re.search("X{"+str(self.win_size)+",}",sequence):
             return 'X'
         #O wins
-        elif re.search("O{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+        elif re.search("O{"+str(self.win_size)+",}",sequence):
             return 'O'      
 
         # Second diagonal win
         sequence = "".join(diagonal2(self.current_state)).strip()
         #X wins
-        if re.search("X{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+        if re.search("X{"+str(self.win_size)+",}",sequence):
             return 'X'
         #O wins
-        elif re.search("O{"+str(self.required_nb_of_pieces_to_win)+",}",sequence):
+        elif re.search("O{"+str(self.win_size)+",}",sequence):
             return 'O'  
 
         # Is whole board full?
@@ -223,11 +223,11 @@ class Game:
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
-        max_depth = self.depth_X;
+        max_depth = self.depth_x;
         value = 10**5
         if max:
             value = -10**5
-            max_depth = self.depth_O;
+            max_depth = self.depth_o;
 
         #check if num_empty cells is less than the max depth
         if self.count_num_empty_cells() < max_depth:
@@ -345,14 +345,19 @@ class Game:
     def e2(self):
         sequence = ''
         score = 0
-        #for each row
+        #for each row and column
         for i in range(int(self.dimension)):
-            sequence = "".join(column(i, self.current_state)).strip()
-            for j in range(int(self.required_nb_of_pieces_to_win)):
-                if re.search("O{"+str(int(self.required_nb_of_pieces_to_win)-j)+",}",sequence):
-                    score+=(int(self.required_nb_of_pieces_to_win)-j)*10**(int(self.required_nb_of_pieces_to_win)-j)
-                elif re.search("X{"+str(int(self.required_nb_of_pieces_to_win)-j)+",}",sequence):
-                    score-=(int(self.required_nb_of_pieces_to_win)-j)*10**(int(self.required_nb_of_pieces_to_win)-j)
+            col_sequence = "".join(column(i, self.current_state)).strip()
+            row_sequence = "".join(row(i, self.current_state)).strip()
+            for j in range(int(self.win_size)):
+                if re.search("O{"+str(int(self.win_size)-j)+",}",col_sequence):
+                    score+=(int(self.win_size)-j)*10**(int(self.win_size)-j)
+                elif re.search("X{"+str(int(self.win_size)-j)+",}",col_sequence):
+                    score-=(int(self.win_size)-j)*10**(int(self.win_size)-j)
+                if re.search("O{"+str(int(self.win_size)-j)+",}",row_sequence):
+                    score+=(int(self.win_size)-j)*10**(int(self.win_size)-j)
+                elif re.search("X{"+str(int(self.win_size)-j)+",}",row_sequence):
+                    score-=(int(self.win_size)-j)*10**(int(self.win_size)-j)
         return score
             
 
