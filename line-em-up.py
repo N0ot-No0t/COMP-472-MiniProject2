@@ -315,13 +315,13 @@ class Game:
             
 
 def transform_input_to_int(char):
-    letters = ['A','B','D','E','F','G','H','I','J',]
+    letters = ['A','B','C','D','E','F','G','H','I','J',]
     for i in range(len(letters)):
         if char.upper() == letters[i]:
             return i
 
 def transform_input_to_char(int_val):
-    letters = ['A','B','D','E','F','G','H','I','J',]
+    letters = ['A','B','C','D','E','F','G','H','I','J',]
     return letters[int_val]
 
 def column(i, state):
