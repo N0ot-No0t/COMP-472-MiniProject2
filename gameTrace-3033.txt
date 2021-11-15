@@ -1,4 +1,4 @@
-n=3 b=0 s=3 t=2
+n=3 b=0 s=3 t=3
 Player X: 3 d=3 a=0 e2()
 Player O: 3 d=3 a=0 e2()
 
@@ -7,8 +7,8 @@ Player O: 3 d=3 a=0 e2()
 1 .  .  .  
 2 .  .  .  
 
-Player X under AI control plays: i = B, j = 1
-   i.  Evaluation time: 0.568989s
+Player X under AI control plays: i = 1, j = 1
+   i.  Evaluation time: 0.5404639s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -19,8 +19,8 @@ Player X under AI control plays: i = B, j = 1
 1 .  X  .  
 2 .  .  .  
 
-Player O under AI control plays: i = C, j = 1
-   i.  Evaluation time: 0.2662289s
+Player O under AI control plays: i = 0, j = 1
+   i.  Evaluation time: 0.2577209s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -28,70 +28,58 @@ Player O under AI control plays: i = C, j = 1
 
 ~ A  B  C  
 0 .  .  .  
-1 .  X  O  
+1 O  X  .  
 2 .  .  .  
 
-Player X under AI control plays: i = C, j = 0
-   i.  Evaluation time: 0.1841578s
+Player X under AI control plays: i = 0, j = 2
+   i.  Evaluation time: 0.1636398s
    ii.  Heuristic evaluations: 20
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
    v.   Average recursion depth: 
 
 ~ A  B  C  
-0 .  .  X  
-1 .  X  O  
-2 .  .  .  
+0 .  .  .  
+1 O  X  .  
+2 X  .  .  
 
-Player O under AI control plays: i = A, j = 2
-   i.  Evaluation time: 0.0735631s
+Player O under AI control plays: i = 2, j = 0
+   i.  Evaluation time: 0.0840721s
    ii.  Heuristic evaluations: 5
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
    v.   Average recursion depth: 
 
 ~ A  B  C  
-0 .  .  X  
-1 .  X  O  
-2 O  .  .  
+0 .  .  O  
+1 O  X  .  
+2 X  .  .  
 
-Player X under AI control plays: i = B, j = 0
-   i.  Evaluation time: 0.138119s
+Player X under AI control plays: i = 1, j = 2
+   i.  Evaluation time: 0.1196029s
    ii.  Heuristic evaluations: 108
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
    v.   Average recursion depth: 
 
 ~ A  B  C  
-0 .  X  X  
-1 .  X  O  
-2 O  .  .  
+0 .  .  O  
+1 O  X  .  
+2 X  X  .  
 
-Player O under AI control plays: i = C, j = 2
-   i.  Evaluation time: 0.0075061s
+Player O under AI control plays: i = None, j = None
+   i.  Evaluation time: 0.0075049s
    ii.  Heuristic evaluations: 6
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
    v.   Average recursion depth: 
 
 ~ A  B  C  
-0 .  X  X  
-1 .  X  O  
-2 O  .  O  
+0 O  O  O  
+1 O  O  O  
+2 O  O  O  
 
-Player X under AI control plays: i = B, j = 2
-   i.  Evaluation time: 0.004003s
-   ii.  Heuristic evaluations: 4
-   iii. Evaluations by depth: 
-   iv.  Average evaluation depth: 
-   v.   Average recursion depth: 
-
-~ A  B  C  
-0 .  X  X  
-1 .  X  O  
-2 O  X  O  
-
-The winner is X!
+The winner is O!
 
 6(b)i   Average evaluation time: 
 6(b)ii  Total heuristic evaluations: 

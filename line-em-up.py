@@ -179,7 +179,7 @@ class Game:
                 return 'O'
 
         # Any diagonal win
-        for i in range(self.dimension+self.dimension+1):
+        for i in range(3*self.dimension+2):
             sequence = "".join(diagonal(i,self.current_state)).strip()
             #X wins
             if re.search("X{"+str(self.win_size)+",}",sequence):
@@ -190,7 +190,7 @@ class Game:
 
         # Is whole board full?
         for i in range(0, self.dimension):
-            for j in range(0, int(self.dimension)):
+            for j in range(0, self.dimension):
                 # There's an empty field, we continue the game
                 if (self.current_state[i][j] == '.'):
                     return None
@@ -215,7 +215,7 @@ class Game:
         return self.result
 
     def count_num_empty_cells(self):
-        num_empty_cells = 0;
+        num_empty_cells = 0
         for col in range(self.dimension):
             sequence = "".join(column(col, self.current_state)).strip()
             num_empty_cells+=sequence.count('.')
@@ -269,7 +269,7 @@ class Game:
             self.heuristic_evaluations += 1
             return (0, x, y)
         if current_depth == max_depth:
-            return (self.e1(), x, y)
+            return (self.e2(), x, y)
 
         for i in range(0, int(self.dimension)):
             for j in range(0, int(self.dimension)):
@@ -277,14 +277,14 @@ class Game:
                     if max:
                         self.current_state[i][j] = 'O  '
                         (v, _, _) = self.minimax(max=False, current_depth=current_depth+1)
-                        if v > value:
+                        if v >= value:
                             value = v
                             x = i
                             y = j
                     else:
                         self.current_state[i][j] = 'X  '
                         (v, _, _) = self.minimax(max=True, current_depth=current_depth+1)
-                        if v < value:
+                        if v <= value:
                             value = v
                             x = i
                             y = j
@@ -380,13 +380,13 @@ class Game:
                     if self.recommend:
                         print(F'Evaluation time: {round(end - start, 7)}s')
                         print(F'Recommended move: x = {transform_input_to_char(x)}, y = {y}')
-                        self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {x}, j = {y}')
+                        self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {transform_input_to_char(x)}, j = {y}')
                         self.trace_file_content.append(F'   i.  Evaluation time: {round(end - start, 7)}s')
                     (x,y) = self.input_move()
             if (self.player_turn == 'X' and self.player_x == self.AI) or (self.player_turn == 'O' and self.player_o == self.AI):
                         print(F'Evaluation time: {round(end - start, 7)}s')
-                        print(F'Player {self.player_turn} under AI control plays: i = {x}, j = {y}')
-                        self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {x}, j = {y}')
+                        print(F'Player {self.player_turn} under AI control plays: i = {transform_input_to_char(x)}, j = {y}')
+                        self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {transform_input_to_char(x)}, j = {y}')
                         self.trace_file_content.append(F'   i.  Evaluation time: {round(end - start, 7)}s')
             
             self.trace_file_content.append(F"   ii.  Heuristic evaluations: {self.heuristic_evaluations}")
@@ -396,7 +396,6 @@ class Game:
 
             self.current_state[x][y] = self.player_turn
             self.switch_player()
-        self.save_trace_file(self.trace_file_content)
 
     #More complicated heuristic. Possible max O(n^2 + 2n^2 + n) so O(n^2).
     def e2(self):
@@ -415,7 +414,7 @@ class Game:
                 elif re.search("X{"+str(self.win_size-j)+",}",row_sequence):
                     score-=(self.win_size-j)*10**(self.win_size-j)
         #for each diagonal (2N+1)
-        for i in range(2*self.dimension+1):
+        for i in range(3*self.dimension+2):
             diag_sequence = "".join(diagonal(i, self.current_state)).strip()
             if len(diag_sequence) >= self.win_size:
                 for j in range(self.win_size):
@@ -490,8 +489,6 @@ def main():
     g = Game(recommend=True)
     #g.play(algo=Game.ALPHABETA,player_x=Game.AI,player_o=Game.AI)
     g.play()
-
-
 
 if __name__ == "__main__":
     main()
