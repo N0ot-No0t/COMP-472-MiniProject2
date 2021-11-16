@@ -20,8 +20,7 @@ class Game:
     def initialize_game(self):
         if self.DEV:
             self.dimension = 5
-            self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
-            self.current_state = np.asarray(self.current_state)
+            self.initialize_board()
             self.nb_blocs = 4
             self.win_size = 4
             self.current_state[2][2] = '#'
@@ -63,6 +62,11 @@ class Game:
 
         # Set the blocs to random places on the board
         # np.put(self.current_state,np.random.choice(range(int(self.n)*int(self.n)), int(self.b), replace='#'),"#")
+
+    def initialize_board(self):
+        self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
+        self.current_state = np.asarray(self.current_state)
+        self.total_moves = 0
 
     def get_dimension_input(self, prompt):
         while True:
@@ -122,6 +126,18 @@ class Game:
                     return self.HUMAN
                 elif player.casefold() == "ai":
                     return self.AI
+                print('Invalid input. Please try again!')
+            except ValueError:
+                print('Invalid input. Please try again!')
+
+    def get_heuristic_input(self, prompt):
+        while True:
+            try:
+                heuristic = str(input(prompt))
+                if heuristic.casefold() == "e1":
+                    return 'e1'
+                elif heuristic.casefold() == "e2":
+                    return 'e2'
                 print('Invalid input. Please try again!')
             except ValueError:
                 print('Invalid input. Please try again!')
@@ -250,7 +266,7 @@ class Game:
             self.evaluations_by_depth[i] = 0       #reset evaluations at each depth to 0
         return self.player_turn
 
-    def minimax(self, remaining_time, max=False, current_depth=0,):
+    def minimax(self, remaining_time, heuristic = 'e2',max=False, current_depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -299,7 +315,10 @@ class Game:
             self.evaluations_by_depth[current_depth] += 1
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
-            return (self.e2(), x, y)
+            if heuristic == 'e2':
+                return (self.e2(), x, y)
+            if heuristic == 'e1':
+                return (self.e1(), x, y)
 
         for i in range(0, int(self.dimension)):
             for j in range(0, int(self.dimension)):
@@ -308,7 +327,7 @@ class Game:
                         end = time.time()
                         elapsed = end - begin
                         self.current_state[i][j] = 'O  '
-                        (v, _, _) = self.minimax(max=False, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
+                        (v, _, _) = self.minimax(max=False, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed), heuristic=heuristic)
                         if v >= value:
                             value = v
                             x = i
@@ -317,7 +336,7 @@ class Game:
                         end = time.time()
                         elapsed = end - begin
                         self.current_state[i][j] = 'X  '
-                        (v, _, _) = self.minimax(max=True, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
+                        (v, _, _) = self.minimax(max=True, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed), heuristic=heuristic)
                         if v <= value:
                             value = v
                             x = i
@@ -325,7 +344,7 @@ class Game:
                     self.current_state[i][j] = '.  '
         return (value, x, y)
 
-    def alphabeta(self, remaining_time, alpha=float('inf'), beta=float('-inf'), max=False, current_depth=0):
+    def alphabeta(self, remaining_time, heuristic = 'e2',alpha=float('inf'), beta=float('-inf'), max=False, current_depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -374,7 +393,10 @@ class Game:
             self.evaluations_by_depth[current_depth] += 1
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
-            return (self.e2(), x, y)
+            if heuristic == 'e2':
+                return (self.e2(), x, y)
+            if heuristic == 'e1':
+                return (self.e1(), x, y)
 
 
         for i in range(0, self.dimension):
@@ -384,7 +406,7 @@ class Game:
                         end = time.time()
                         elapsed = end - begin
                         self.current_state[i][j] = 'O'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
+                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed), heuristic=heuristic)
                         if v > value:
                             value = v
                             x = i
@@ -393,7 +415,7 @@ class Game:
                         end = time.time()
                         elapsed = end - begin
                         self.current_state[i][j] = 'X'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
+                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed), heuristic=heuristic)
                         if v < value:
                             value = v
                             x = i
@@ -411,7 +433,7 @@ class Game:
                             beta = value
         return (value, x, y)
 
-    def play(self):
+    def play(self, heuristic_x = 'e2', heuristic_o='e2'):
         while True:
             self.draw_board()
             if self.check_end():
@@ -432,14 +454,14 @@ class Game:
             start = time.time()
             if self.algo == self.MINIMAX:
                 if self.player_turn == 'X':
-                    (_, x, y) = self.minimax(max=False, remaining_time=self.max_time)
+                    (_, x, y) = self.minimax(max=False, remaining_time=self.max_time, heuristic=heuristic_x)
                 else:
-                    (_, x, y) = self.minimax(max=True, remaining_time=self.max_time)
+                    (_, x, y) = self.minimax(max=True, remaining_time=self.max_time, heuristic=heuristic_o)
             else: # algo == self.ALPHABETA
                 if self.player_turn == 'X':
-                    (m, x, y) = self.alphabeta(max=False)
+                    (m, x, y) = self.alphabeta(max=False, remaining_time=self.max_time, heuristic=heuristic_x)
                 else:
-                    (m, x, y) = self.alphabeta(max=True)
+                    (m, x, y) = self.alphabeta(max=True, remaining_time=self.max_time, heuristic=heuristic_o)
             end = time.time()
             if (self.player_turn == 'X' and self.player_x == self.HUMAN) or (self.player_turn == 'O' and self.player_o == self.HUMAN):
                     if self.recommend:
@@ -555,10 +577,31 @@ def diagonals(state):
 
     return len(diags), diags 
 
+def scoreboard(r = 10):
+    g = Game(recommend=True)
+    p_x_heuristic = g.get_heuristic_input("Enter \'e1\' or \'e2\' to set the heuristic for player X: ")
+    p_o_heuristic = g.get_heuristic_input("Enter \'e1\' or \'e2\' to set the heuristic for player O: ")
+
+    #start with X by default
+    for round in range(r):
+        print("Round #"+str(round))
+        g.play(heuristic_x=p_x_heuristic, heuristic_o=p_o_heuristic)
+        g.initialize_board()
+
+    print("Time to switch players!")
+
+    #start with O
+    g.player_turn = 'O'
+    for round in range(r):
+        print("Round #"+str(round))
+        g.play(heuristic_x=p_x_heuristic, heuristic_o=p_o_heuristic)
+        g.initialize_board()
 
 def main():
-    g = Game(recommend=True)
-    g.play()
+    # g = Game(recommend=True)
+    # g.play()
+
+    scoreboard(4)
 
 if __name__ == "__main__":
     main()
