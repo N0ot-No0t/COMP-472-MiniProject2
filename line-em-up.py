@@ -9,7 +9,7 @@ class Game:
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
-    DEV = True
+    DEV = False
     
     def __init__(self, recommend = True):
         self.trace_file_content = []
@@ -645,10 +645,10 @@ def scoreboard(r = 10):
         file.write('\n'.join(g.scoreboard_file_content))
 
 def main():
-    # g = Game(recommend=True)
-    # g.play()
+    g = Game(recommend=True)
+    g.play()
 
-    scoreboard(4)
+    # scoreboard(4)
 
 if __name__ == "__main__":
     main()
