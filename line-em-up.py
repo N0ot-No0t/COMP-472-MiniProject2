@@ -9,10 +9,11 @@ class Game:
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
-    DEV = False
+    DEV = True
     
     def __init__(self, recommend = True):
         self.trace_file_content = []
+        self.scoreboard_file_content = []
         self.heuristic_evaluations = 0
         self.initialize_game()
         self.recommend = recommend
@@ -59,6 +60,12 @@ class Game:
         self.trace_file_content.append(f"n={self.dimension} b={self.nb_blocs} s={self.win_size} t={self.max_time}")
         self.trace_file_content.append(f"Player X: {self.player_x} d={self.depth_x} a={self.algo} e2()")
         self.trace_file_content.append(f"Player O: {self.player_o} d={self.depth_o} a={self.algo} e2()")
+
+        self.total_wins_e1 = 0
+        self.total_wins_e2 = 0
+        self.total_draws = 0
+        self.draw = False
+        self.scoreboard_total_moves = []
 
         # Set the blocs to random places on the board
         # np.put(self.current_state,np.random.choice(range(int(self.n)*int(self.n)), int(self.b), replace='#'),"#")
@@ -234,6 +241,7 @@ class Game:
                 self.trace_file_content.append('\nThe winner is O!\n')
             elif self.result == '.':
                 print("It's a tie!")
+                self.draw = True
                 self.trace_file_content.append("\nIt's a tie!\n")
             # self.initialize_game()
         return self.result
@@ -448,7 +456,21 @@ class Game:
                 self.trace_file_content.append(F"6(b)iv  Average evaluation depth: {avg_evaluation_depth}")
                 self.trace_file_content.append(F"6(b)v   Average recursion depth: ")
                 self.trace_file_content.append(F"6(b)vi  Total moves: {self.total_moves}")
+                self.scoreboard_total_moves.append(self.total_moves)
                 self.save_trace_file(self.trace_file_content)
+                if self.player_turn == "X":
+                    if heuristic_o == "e1":
+                        self.total_wins_e1 += 1
+                    else:
+                        self.total_wins_e2 += 1
+                else:
+                    if heuristic_x == "e1":
+                        self.total_wins_e1 += 1
+                    else:
+                        self.total_wins_e2 += 1
+                if self.draw:
+                        self.total_draws += 1
+                        self.draw = False
                 return
             self.total_moves += 1
             start = time.time()
@@ -596,6 +618,31 @@ def scoreboard(r = 10):
         print("Round #"+str(round))
         g.play(heuristic_x=p_x_heuristic, heuristic_o=p_o_heuristic)
         g.initialize_board()
+
+    g.scoreboard_file_content.append(f"n={g.dimension} b={g.nb_blocs} s={g.win_size} t={g.max_time}")
+
+    g.scoreboard_file_content.append(f"Player X: d={g.depth_x} a={g.player_x}")
+    g.scoreboard_file_content.append(f"Player Y: d={g.depth_y} a={g.player_y}")
+
+    g.scoreboard_file_content.append(f"{2*r} games")
+    g.scoreboard_file_content.append(f"Total wins for heuristic e1: {g.total_wins_e1}")
+    g.scoreboard_file_content.append(f"Total wins for heuristic e2: {g.total_wins_e2}")
+    g.scoreboard_file_content.append(f"Total draws: {g.total_draws}")
+
+    g.scoreboard_file_content.append(F"i   Average evaluation time: {sum(g.all_evaluation_times)/len(g.all_evaluation_times)}s")
+    g.scoreboard_file_content.append(F"ii   Total heuristic evaluations: {sum(g.all_num_heuristic_evaluations)}")
+    g.scoreboard_file_content.append(F"iii   Evaluations by depth: {g.all_evaluations_by_depth}")
+    avg_evaluation_depth = 0
+    for i in range(len(g.all_evaluations_by_depth)):
+        avg_evaluation_depth += (i*g.all_evaluations_by_depth[i])
+
+    avg_evaluation_depth /= float(sum(g.all_evaluations_by_depth.values()))
+    g.scoreboard_file_content.append(F"iv   Average evaluation depth: {avg_evaluation_depth}")
+    g.scoreboard_file_content.append(F"v   Average recursion depth: ")
+    g.scoreboard_file_content.append(F"vi   Average moves per game: {sum(g.scoreboard_total_moves)/len(g.scoreboard_total_moves)}")
+    filename = "scoreboard.txt"
+    with open(filename, "w") as file:
+        file.write('\n'.join(g.scoreboard_file_content))
 
 def main():
     # g = Game(recommend=True)
