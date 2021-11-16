@@ -9,7 +9,7 @@ class Game:
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
-    DEV = False
+    DEV = True
     
     def __init__(self, recommend = True):
         self.trace_file_content = []
@@ -179,8 +179,9 @@ class Game:
                 return 'O'
 
         # Any diagonal win
-        for i in range(3*self.dimension+2):
-            sequence = "".join(diagonal(i,self.current_state)).strip()
+        diag_l, diags = diagonals(self.current_state)
+        for i in range(diag_l):
+            sequence = "".join(diags[i]).strip()
             #X wins
             if re.search("X{"+str(self.win_size)+",}",sequence):
                 return 'X'
@@ -269,7 +270,7 @@ class Game:
             self.heuristic_evaluations += 1
             return (0, x, y)
         if current_depth == max_depth:
-            return (self.e2(), x, y)
+            return (self.e1(), x, y)
 
         for i in range(0, int(self.dimension)):
             for j in range(0, int(self.dimension)):
@@ -321,7 +322,7 @@ class Game:
             self.heuristic_evaluations += 1
             return (0, x, y)
         if current_depth == max_depth:
-            return (self.e2(), x, y)
+            return (self.e1(), x, y)
         for i in range(0, self.dimension):
             for j in range(0, self.dimension):
                 if self.current_state[i][j] == '.':
@@ -413,9 +414,10 @@ class Game:
                     score+=(self.win_size-j)*10**(self.win_size-j)
                 elif re.search("X{"+str(self.win_size-j)+",}",row_sequence):
                     score-=(self.win_size-j)*10**(self.win_size-j)
-        #for each diagonal (2N+1)
-        for i in range(3*self.dimension+2):
-            diag_sequence = "".join(diagonal(i, self.current_state)).strip()
+        #for each diagonal
+        diag_l, diags = diagonals(self.current_state)
+        for i in range(diag_l):
+            diag_sequence = "".join(diags[i]).strip()
             if len(diag_sequence) >= self.win_size:
                 for j in range(self.win_size):
                     if re.search("O{"+str(self.win_size-j)+",}",diag_sequence):
@@ -478,11 +480,13 @@ def row(i, state):
     return [row[i] for row in state]
 
 #It just works, don't question it. Returns the n_th diagonal.
-#Considering a NxN matrix has 2N+1 diagonals, that will be the amount of diagonals that can be acquired.
-def diagonal(n,state):
-    diags = [state[::-1,:].diagonal(i) for i in range(-3,4)]
-    diags.extend(state.diagonal(i) for i in range(3,-4,-1))
-    return diags[n].tolist()
+#Considering a NxN matrix has 3N+2 diagonals, that will be the amount of diagonals that can be acquired.
+#https://stackoverflow.com/questions/6313308/get-all-the-diagonals-in-a-matrix-list-of-lists-in-python
+def diagonals(state):
+    diags = [state[::-1,:].diagonal(i) for i in range(-state.shape[0]+1,state.shape[1])]
+    diags.extend(state.diagonal(i) for i in range(state.shape[1]-1,-state.shape[0],-1))
+
+    return len(diags), diags 
 
 
 def main():

@@ -10,7 +10,7 @@ Player O: 3 d=2 a=0 e2()
 4 #  .  .  .  .  
 
 Player X under AI control plays: i = E, j = 2
-   i.  Evaluation time: 0.77967s
+   i.  Evaluation time: 0.6750801s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -24,7 +24,7 @@ Player X under AI control plays: i = E, j = 2
 4 #  .  .  .  .  
 
 Player O under AI control plays: i = D, j = 2
-   i.  Evaluation time: 0.5124402s
+   i.  Evaluation time: 0.483916s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -38,7 +38,7 @@ Player O under AI control plays: i = D, j = 2
 4 #  .  .  .  .  
 
 Player X under AI control plays: i = C, j = 4
-   i.  Evaluation time: 0.4283679s
+   i.  Evaluation time: 0.3858321s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -52,7 +52,7 @@ Player X under AI control plays: i = C, j = 4
 4 #  .  X  .  .  
 
 Player O under AI control plays: i = C, j = 3
-   i.  Evaluation time: 0.3893352s
+   i.  Evaluation time: 0.333287s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -66,7 +66,7 @@ Player O under AI control plays: i = C, j = 3
 4 #  .  X  .  .  
 
 Player X under AI control plays: i = C, j = 1
-   i.  Evaluation time: 0.3452971s
+   i.  Evaluation time: 0.293252s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -80,7 +80,7 @@ Player X under AI control plays: i = C, j = 1
 4 #  .  X  .  .  
 
 Player O under AI control plays: i = C, j = 0
-   i.  Evaluation time: 0.273735s
+   i.  Evaluation time: 0.267731s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -94,7 +94,7 @@ Player O under AI control plays: i = C, j = 0
 4 #  .  X  .  .  
 
 Player X under AI control plays: i = B, j = 2
-   i.  Evaluation time: 0.2697308s
+   i.  Evaluation time: 0.2246921s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -108,7 +108,7 @@ Player X under AI control plays: i = B, j = 2
 4 #  .  X  .  .  
 
 Player O under AI control plays: i = A, j = 2
-   i.  Evaluation time: 0.2246928s
+   i.  Evaluation time: 0.201674s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -122,7 +122,7 @@ Player O under AI control plays: i = A, j = 2
 4 #  .  X  .  .  
 
 Player X under AI control plays: i = E, j = 4
-   i.  Evaluation time: 0.191164s
+   i.  Evaluation time: 0.1626401s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -136,7 +136,7 @@ Player X under AI control plays: i = E, j = 4
 4 #  .  X  .  X  
 
 Player O under AI control plays: i = E, j = 1
-   i.  Evaluation time: 0.1601372s
+   i.  Evaluation time: 0.1366169s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -150,7 +150,7 @@ Player O under AI control plays: i = E, j = 1
 4 #  .  X  .  X  
 
 Player X under AI control plays: i = B, j = 4
-   i.  Evaluation time: 0.1281099s
+   i.  Evaluation time: 0.113097s
    ii.  Heuristic evaluations: 10
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -164,7 +164,7 @@ Player X under AI control plays: i = B, j = 4
 4 #  X  X  .  X  
 
 Player O under AI control plays: i = D, j = 4
-   i.  Evaluation time: 0.1080921s
+   i.  Evaluation time: 0.0965829s
    ii.  Heuristic evaluations: 9
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -178,7 +178,7 @@ Player O under AI control plays: i = D, j = 4
 4 #  X  X  O  X  
 
 Player X under AI control plays: i = E, j = 0
-   i.  Evaluation time: 0.0760651s
+   i.  Evaluation time: 0.0690591s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -192,7 +192,7 @@ Player X under AI control plays: i = E, j = 0
 4 #  X  X  O  X  
 
 Player O under AI control plays: i = D, j = 3
-   i.  Evaluation time: 0.0790679s
+   i.  Evaluation time: 0.0695589s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -206,7 +206,7 @@ Player O under AI control plays: i = D, j = 3
 4 #  X  X  O  X  
 
 Player X under AI control plays: i = D, j = 1
-   i.  Evaluation time: 0.0420358s
+   i.  Evaluation time: 0.0380321s
    ii.  Heuristic evaluations: 6
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -220,7 +220,7 @@ Player X under AI control plays: i = D, j = 1
 4 #  X  X  O  X  
 
 Player O under AI control plays: i = D, j = 0
-   i.  Evaluation time: 0.0495422s
+   i.  Evaluation time: 0.034029s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -234,7 +234,7 @@ Player O under AI control plays: i = D, j = 0
 4 #  X  X  O  X  
 
 Player X under AI control plays: i = B, j = 3
-   i.  Evaluation time: 0.02402s
+   i.  Evaluation time: 0.0305252s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -248,7 +248,7 @@ Player X under AI control plays: i = B, j = 3
 4 #  X  X  O  X  
 
 Player O under AI control plays: i = B, j = 1
-   i.  Evaluation time: 0.0135109s
+   i.  Evaluation time: 0.0120111s
    ii.  Heuristic evaluations: 3
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -262,7 +262,7 @@ Player O under AI control plays: i = B, j = 1
 4 #  X  X  O  X  
 
 Player X under AI control plays: i = A, j = 3
-   i.  Evaluation time: 0.0140121s
+   i.  Evaluation time: 0.01301s
    ii.  Heuristic evaluations: 6
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -276,7 +276,7 @@ Player X under AI control plays: i = A, j = 3
 4 #  X  X  O  X  
 
 Player O under AI control plays: i = A, j = 1
-   i.  Evaluation time: 0.003504s
+   i.  Evaluation time: 0.002846s
    ii.  Heuristic evaluations: 0
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
@@ -290,7 +290,7 @@ Player O under AI control plays: i = A, j = 1
 4 #  X  X  O  X  
 
 Player X under AI control plays: i = A, j = 0
-   i.  Evaluation time: 0.0015008s
+   i.  Evaluation time: 0.0015011s
    ii.  Heuristic evaluations: 1
    iii. Evaluations by depth: 
    iv.  Average evaluation depth: 
