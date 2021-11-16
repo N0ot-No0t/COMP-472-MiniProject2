@@ -52,6 +52,8 @@ class Game:
 
         self.evaluations_by_depth = {i: 0 for i in range(max(self.depth_x, self.depth_o) + 1)}  # +1 because depth includes last value (depth 2 = 0, 1, 2)
         self.depths_evaluated = []
+        self.all_evaluation_times = []
+        self.all_num_heuristic_evaluations = []
 
         self.trace_file_content.append(f"n={self.dimension} b={self.nb_blocs} s={self.win_size} t={self.max_time}")
         self.trace_file_content.append(f"Player X: {self.player_x} d={self.depth_x} a={self.algo} e2()")
@@ -378,12 +380,12 @@ class Game:
         while True:
             self.draw_board()
             if self.check_end():
-                self.trace_file_content.append("6(b)i   Average evaluation time: ")
-                self.trace_file_content.append("6(b)ii  Total heuristic evaluations: ")
-                self.trace_file_content.append("6(b)iii Evaluations by depth: ")
-                self.trace_file_content.append("6(b)iv  Average evaluation depth: ")
-                self.trace_file_content.append("6(b)v   Average recursion depth: ")
-                self.trace_file_content.append("6(b)vi  Total moves: ")
+                self.trace_file_content.append(F"6(b)i   Average evaluation time: {sum(self.all_evaluation_times)/len(self.all_evaluation_times)}")
+                self.trace_file_content.append(F"6(b)ii  Total heuristic evaluations: {sum(self.all_num_heuristic_evaluations)}")
+                self.trace_file_content.append(F"6(b)iii Evaluations by depth: ")
+                self.trace_file_content.append(F"6(b)iv  Average evaluation depth: ")
+                self.trace_file_content.append(F"6(b)v   Average recursion depth: ")
+                self.trace_file_content.append(F"6(b)vi  Total moves: ")
                 self.save_trace_file(self.trace_file_content)
                 return
             start = time.time()
@@ -404,14 +406,17 @@ class Game:
                         print(F'Recommended move: x = {transform_input_to_char(x)}, y = {y}')
                         self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {transform_input_to_char(x)}, j = {y}')
                         self.trace_file_content.append(F'   i.  Evaluation time: {round(end - start, 7)}s')
+                        self.all_evaluation_times.append(round(end - start, 7))
                     (x,y) = self.input_move()
             if (self.player_turn == 'X' and self.player_x == self.AI) or (self.player_turn == 'O' and self.player_o == self.AI):
                         print(F'Evaluation time: {round(end - start, 7)}s')
                         print(F'Player {self.player_turn} under AI control plays: i = {transform_input_to_char(x)}, j = {y}')
                         self.trace_file_content.append(F'\nPlayer {self.player_turn} under AI control plays: i = {transform_input_to_char(x)}, j = {y}')
                         self.trace_file_content.append(F'   i.  Evaluation time: {round(end - start, 7)}s')
+                        self.all_evaluation_times.append(round(end - start, 7))
             
             self.trace_file_content.append(F"   ii.  Heuristic evaluations: {self.heuristic_evaluations}")
+            self.all_num_heuristic_evaluations.append(self.heuristic_evaluations)
             self.trace_file_content.append(F"   iii. Evaluations by depth: {self.evaluations_by_depth}")
             self.trace_file_content.append(F"   iv.  Average evaluation depth: {sum(self.depths_evaluated)/float(len(self.depths_evaluated))}")
             self.trace_file_content.append(F"   v.   Average recursion depth: ")
