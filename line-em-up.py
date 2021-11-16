@@ -29,7 +29,7 @@ class Game:
             self.current_state[0][4] = '#'
             self.current_state[4][3] = '#'
             self.max_time = 2
-            self.algo = self.MINIMAX
+            self.algo = self.ALPHABETA
             self.player_x = self.AI
             self.player_o = self.AI
             self.depth_x = 4
@@ -415,8 +415,8 @@ class Game:
                         elapsed = end - begin
                         current_remaining_time = remaining_time - elapsed
                         self.current_state[i][j] = 'O'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1, remaining_time=current_remaining_time, heuristic=heuristic)
-                        if v > value:
+                        (v, _, _) = self.alphabeta(alpha = alpha, beta = beta, max=False, remaining_time=current_remaining_time, current_depth=current_depth+1, heuristic=heuristic)
+                        if v >= value:
                             value = v
                             x = i
                             y = j
@@ -425,8 +425,8 @@ class Game:
                         elapsed = end - begin
                         current_remaining_time = remaining_time - elapsed
                         self.current_state[i][j] = 'X'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1, remaining_time=current_remaining_time, heuristic=heuristic)
-                        if v < value:
+                        (v, _, _) = self.alphabeta(alpha = alpha, beta = beta, max=True, remaining_time=current_remaining_time, current_depth=current_depth+1, heuristic=heuristic)
+                        if v <= value:
                             value = v
                             x = i
                             y = j
@@ -565,14 +565,14 @@ class Game:
             file.write('\n'.join(trace))
 
 def transform_input_to_int(char):
-    letters = ['A','B','C','D','E','F','G','H','I','J',]
+    letters = ['A','B','C','D','E','F','G','H','I','J']
     for i in range(len(letters)):
         if char.upper() == letters[i]:
             return i
 
 def transform_input_to_char(int_val):
-    letters = ['A','B','C','D','E','F','G','H','I','J',]
-    return letters[int_val]
+    letters = ['A','B','C','D','E','F','G','H','I','J']
+    return letters[int(int_val)]
 
 def eval_o_vs_x(grid):
     x_count = 0
