@@ -32,8 +32,8 @@ class Game:
             self.algo = self.MINIMAX
             self.player_x = self.AI
             self.player_o = self.AI
-            self.depth_x = 2
-            self.depth_o = 2
+            self.depth_x = 4
+            self.depth_o = 4
         else:
             self.dimension = self.get_dimension_input("Enter your value for \"n\", where \"n\" will be the dimension (n x n) of the board: ")
             self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
@@ -250,13 +250,14 @@ class Game:
             self.evaluations_by_depth[i] = 0       #reset evaluations at each depth to 0
         return self.player_turn
 
-    def minimax(self, max=False, current_depth=0):
+    def minimax(self, remaining_time, max=False, current_depth=0,):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
+        begin = time.time()
         max_depth = self.depth_x
         value = float('inf')
         if max:
@@ -293,20 +294,27 @@ class Game:
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (self.e2(), x, y)
+        if remaining_time < 0.2:
+            #print("Took too long with current heuristic. Switching to e1")
+            return (self.e1(), x, y)
 
         for i in range(0, int(self.dimension)):
             for j in range(0, int(self.dimension)):
                 if self.current_state[i][j].strip() == '.':
                     if max:
+                        end = time.time()
+                        elapsed = end - begin
                         self.current_state[i][j] = 'O  '
-                        (v, _, _) = self.minimax(max=False, current_depth=current_depth+1)
+                        (v, _, _) = self.minimax(max=False, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
                         if v >= value:
                             value = v
                             x = i
                             y = j
                     else:
+                        end = time.time()
+                        elapsed = end - begin
                         self.current_state[i][j] = 'X  '
-                        (v, _, _) = self.minimax(max=True, current_depth=current_depth+1)
+                        (v, _, _) = self.minimax(max=True, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
                         if v <= value:
                             value = v
                             x = i
@@ -314,13 +322,14 @@ class Game:
                     self.current_state[i][j] = '.  '
         return (value, x, y)
 
-    def alphabeta(self, alpha=float('inf'), beta=float('-inf'), max=False, current_depth=0):
+    def alphabeta(self, remaining_time, alpha=float('inf'), beta=float('-inf'), max=False, current_depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
         # 0  - a tie
         # 1  - loss for 'X'
         # We're initially setting it to 2 or -2 as worse than the worst case:
+        begin = time.time()
         max_depth = self.depth_x
         value = float('inf')
         if max:
@@ -357,19 +366,27 @@ class Game:
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (self.e2(), x, y)
+        if remaining_time < 0.2:
+            #print("Took too long with current heuristic. Switching to e1")
+            return (self.e1(), x, y)
+
         for i in range(0, self.dimension):
             for j in range(0, self.dimension):
                 if self.current_state[i][j] == '.':
                     if max:
+                        end = time.time()
+                        elapsed = end - begin
                         self.current_state[i][j] = 'O'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1)
+                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
                         if v > value:
                             value = v
                             x = i
                             y = j
                     else:
+                        end = time.time()
+                        elapsed = end - begin
                         self.current_state[i][j] = 'X'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1)
+                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed))
                         if v < value:
                             value = v
                             x = i
@@ -408,9 +425,9 @@ class Game:
             start = time.time()
             if self.algo == self.MINIMAX:
                 if self.player_turn == 'X':
-                    (_, x, y) = self.minimax(max=False)
+                    (_, x, y) = self.minimax(max=False, remaining_time=self.max_time)
                 else:
-                    (_, x, y) = self.minimax(max=True)
+                    (_, x, y) = self.minimax(max=True, remaining_time=self.max_time)
             else: # algo == self.ALPHABETA
                 if self.player_turn == 'X':
                     (m, x, y) = self.alphabeta(max=False)
