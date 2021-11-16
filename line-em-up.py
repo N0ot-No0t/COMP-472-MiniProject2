@@ -51,6 +51,7 @@ class Game:
         self.player_turn = 'X'
 
         self.evaluations_by_depth = {i: 0 for i in range(max(self.depth_x, self.depth_o) + 1)}  # +1 because depth includes last value (depth 2 = 0, 1, 2)
+        self.depths_evaluated = []
 
         self.trace_file_content.append(f"n={self.dimension} b={self.nb_blocs} s={self.win_size} t={self.max_time}")
         self.trace_file_content.append(f"Player X: {self.player_x} d={self.depth_x} a={self.algo} e2()")
@@ -239,6 +240,7 @@ class Game:
         elif self.player_turn == 'O':
             self.player_turn = 'X'
         self.heuristic_evaluations = 0
+        self.depths_evaluated = []
         for i in range(len(self.evaluations_by_depth)):
             self.evaluations_by_depth[i] = 0       #reset evaluations at each depth to 0
         return self.player_turn
@@ -266,17 +268,21 @@ class Game:
         if result == 'X':
             self.heuristic_evaluations += 1
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (float('-inf'), x, y)
         elif result == 'O':
             self.heuristic_evaluations += 1
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (float('inf'), x, y)
         elif result == '.':
             self.heuristic_evaluations += 1
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (0, x, y)
         if current_depth == max_depth:
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (self.e2(), x, y)
 
         for i in range(0, int(self.dimension)):
@@ -322,17 +328,21 @@ class Game:
         if result == 'X':
             self.heuristic_evaluations += 1
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (float('-inf'), x, y)
         elif result == 'O':
             self.heuristic_evaluations += 1
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (float('inf'), x, y)
         elif result == '.':
             self.heuristic_evaluations += 1
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (0, x, y)
         if current_depth == max_depth:
             self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
             return (self.e2(), x, y)
         for i in range(0, self.dimension):
             for j in range(0, self.dimension):
@@ -403,7 +413,7 @@ class Game:
             
             self.trace_file_content.append(F"   ii.  Heuristic evaluations: {self.heuristic_evaluations}")
             self.trace_file_content.append(F"   iii. Evaluations by depth: {self.evaluations_by_depth}")
-            self.trace_file_content.append(F"   iv.  Average evaluation depth: ")
+            self.trace_file_content.append(F"   iv.  Average evaluation depth: {sum(self.depths_evaluated)/float(len(self.depths_evaluated))}")
             self.trace_file_content.append(F"   v.   Average recursion depth: ")
 
             self.current_state[x][y] = self.player_turn
