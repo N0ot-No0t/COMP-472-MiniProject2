@@ -9,7 +9,7 @@ class Game:
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
-    DEV = True
+    DEV = False
     
     def __init__(self, recommend = True):
         self.trace_file_content = []
@@ -145,8 +145,8 @@ class Game:
         for i in range(int(self.dimension)):
             header_row += transform_input_to_char(i)+"  "
 
-        print(header_row)
-        self.trace_file_content.append(f"\n{header_row}")
+        print(f"{header_row}\t(move #{self.total_moves})")
+        self.trace_file_content.append(f"\n{header_row}\t(move #{self.total_moves})")
         for y in range(0, int(self.dimension)):
             row_to_print = str(y)+" "
             for x in range(0, int(self.dimension)):
@@ -291,6 +291,9 @@ class Game:
             return (0, x, y)
         if remaining_time < 0.2:
             #print("Took too long with current heuristic. Switching to e1")
+            self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
+            self.all_evaluations_by_depth[current_depth] += 1
             return (self.e1(), x, y)
         if current_depth == max_depth:
             self.evaluations_by_depth[current_depth] += 1
@@ -363,6 +366,9 @@ class Game:
             return (0, x, y)
         if remaining_time < 0.2:
             #print("Took too long with current heuristic. Switching to e1")
+            self.evaluations_by_depth[current_depth] += 1
+            self.depths_evaluated.append(current_depth)
+            self.all_evaluations_by_depth[current_depth] += 1
             return (self.e1(), x, y)
         if current_depth == max_depth:
             self.evaluations_by_depth[current_depth] += 1
@@ -503,6 +509,7 @@ class Game:
         #right vertical half
         score += eval_o_vs_x(self.current_state[:,int(self.dimension/2):])
 
+        self.heuristic_evaluations += 1
         return score
 
 
