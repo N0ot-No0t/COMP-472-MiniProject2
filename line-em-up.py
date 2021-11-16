@@ -289,14 +289,14 @@ class Game:
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (0, x, y)
+        if remaining_time < 0.2:
+            #print("Took too long with current heuristic. Switching to e1")
+            return (self.e1(), x, y)
         if current_depth == max_depth:
             self.evaluations_by_depth[current_depth] += 1
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (self.e2(), x, y)
-        if remaining_time < 0.2:
-            #print("Took too long with current heuristic. Switching to e1")
-            return (self.e1(), x, y)
 
         for i in range(0, int(self.dimension)):
             for j in range(0, int(self.dimension)):
@@ -361,14 +361,15 @@ class Game:
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (0, x, y)
+        if remaining_time < 0.2:
+            #print("Took too long with current heuristic. Switching to e1")
+            return (self.e1(), x, y)
         if current_depth == max_depth:
             self.evaluations_by_depth[current_depth] += 1
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (self.e2(), x, y)
-        if remaining_time < 0.2:
-            #print("Took too long with current heuristic. Switching to e1")
-            return (self.e1(), x, y)
+
 
         for i in range(0, self.dimension):
             for j in range(0, self.dimension):
