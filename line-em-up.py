@@ -55,6 +55,7 @@ class Game:
         self.all_evaluation_times = []
         self.all_num_heuristic_evaluations = []
         self.all_evaluations_by_depth = {i: 0 for i in range(max(self.depth_x, self.depth_o) + 1)}
+        self.total_moves = 0
 
         self.trace_file_content.append(f"n={self.dimension} b={self.nb_blocs} s={self.win_size} t={self.max_time}")
         self.trace_file_content.append(f"Player X: {self.player_x} d={self.depth_x} a={self.algo} e2()")
@@ -400,9 +401,10 @@ class Game:
                 avg_evaluation_depth /= float(sum(self.all_evaluations_by_depth.values()))
                 self.trace_file_content.append(F"6(b)iv  Average evaluation depth: {avg_evaluation_depth}")
                 self.trace_file_content.append(F"6(b)v   Average recursion depth: ")
-                self.trace_file_content.append(F"6(b)vi  Total moves: ")
+                self.trace_file_content.append(F"6(b)vi  Total moves: {self.total_moves}")
                 self.save_trace_file(self.trace_file_content)
                 return
+            self.total_moves += 1
             start = time.time()
             if self.algo == self.MINIMAX:
                 if self.player_turn == 'X':
