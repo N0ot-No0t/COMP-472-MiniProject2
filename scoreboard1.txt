@@ -1,0 +1,13 @@
+n=4 b=4 s=3 t=5
+Player X: d=6 a=3
+Player Y: d=6 a=3
+10 games
+Total wins for heuristic e1: 10
+Total wins for heuristic e2: 0
+Total draws: 0
+i   Average evaluation time: 4.689049398360658s
+ii   Total heuristic evaluations: 374750
+iii   Evaluations by depth: {0: 0, 1: 715, 2: 613, 3: 544, 4: 1722, 5: 10723, 6: 360433}
+iv   Average evaluation depth: 5.941758505670447
+v   Average recursion depth: 
+vi   Average moves per game: 6.1

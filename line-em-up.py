@@ -9,7 +9,7 @@ class Game:
     ALPHABETA = 1
     HUMAN = 2
     AI = 3
-    DEV = True
+    DEV = False
     
     def __init__(self, recommend = True):
         self.trace_file_content = []
@@ -413,8 +413,9 @@ class Game:
                     if max:
                         end = time.time()
                         elapsed = end - begin
+                        current_remaining_time = remaining_time - elapsed
                         self.current_state[i][j] = 'O'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed), heuristic=heuristic)
+                        (v, _, _) = self.alphabeta(alpha, beta, max=False, current_depth=current_depth+1, remaining_time=current_remaining_time, heuristic=heuristic)
                         if v > value:
                             value = v
                             x = i
@@ -422,8 +423,9 @@ class Game:
                     else:
                         end = time.time()
                         elapsed = end - begin
+                        current_remaining_time = remaining_time - elapsed
                         self.current_state[i][j] = 'X'
-                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1, remaining_time=(remaining_time - elapsed), heuristic=heuristic)
+                        (v, _, _) = self.alphabeta(alpha, beta, max=True, current_depth=current_depth+1, remaining_time=current_remaining_time, heuristic=heuristic)
                         if v < value:
                             value = v
                             x = i
@@ -622,7 +624,7 @@ def scoreboard(r = 10):
     g.scoreboard_file_content.append(f"n={g.dimension} b={g.nb_blocs} s={g.win_size} t={g.max_time}")
 
     g.scoreboard_file_content.append(f"Player X: d={g.depth_x} a={g.player_x}")
-    g.scoreboard_file_content.append(f"Player Y: d={g.depth_y} a={g.player_y}")
+    g.scoreboard_file_content.append(f"Player Y: d={g.depth_o} a={g.player_o}")
 
     g.scoreboard_file_content.append(f"{2*r} games")
     g.scoreboard_file_content.append(f"Total wins for heuristic e1: {g.total_wins_e1}")
@@ -645,10 +647,10 @@ def scoreboard(r = 10):
         file.write('\n'.join(g.scoreboard_file_content))
 
 def main():
-    # g = Game(recommend=True)
-    # g.play()
+    g = Game(recommend=True)
+    g.play()
 
-    scoreboard(4)
+    #scoreboard(5)
 
 if __name__ == "__main__":
     main()
