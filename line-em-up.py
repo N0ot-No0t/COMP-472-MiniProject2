@@ -71,7 +71,11 @@ class Game:
         # np.put(self.current_state,np.random.choice(range(int(self.n)*int(self.n)), int(self.b), replace='#'),"#")
 
     def initialize_board(self):
-        self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
+        #self.current_state = [['.' for col in range(self.dimension)] for row in range(self.dimension)]
+        for row in range(self.dimension):
+            for col in range(self.dimension):
+                if self.current_state[row][col] != '#':
+                    self.current_state[row][col] = '.'
         self.current_state = np.asarray(self.current_state)
         self.total_moves = 0
 
@@ -319,7 +323,7 @@ class Game:
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (self.e1(), x, y)
-        if current_depth == max_depth:
+        if current_depth >= max_depth:
             self.evaluations_by_depth[current_depth] += 1
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
@@ -352,7 +356,7 @@ class Game:
                     self.current_state[i][j] = '.  '
         return (value, x, y)
 
-    def alphabeta(self, remaining_time, heuristic = 'e2',alpha=float('inf'), beta=float('-inf'), max=False, current_depth=0):
+    def alphabeta(self, remaining_time, heuristic = 'e2',alpha=float('-inf'), beta=float('inf'), max=False, current_depth=0):
         # Minimizing for 'X' and maximizing for 'O'
         # Possible values are:
         # -1 - win for 'X'
@@ -397,7 +401,7 @@ class Game:
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
             return (self.e1(), x, y)
-        if current_depth == max_depth:
+        if current_depth >= max_depth:
             self.evaluations_by_depth[current_depth] += 1
             self.depths_evaluated.append(current_depth)
             self.all_evaluations_by_depth[current_depth] += 1
